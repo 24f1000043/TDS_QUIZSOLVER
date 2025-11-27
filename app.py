@@ -54,6 +54,7 @@ def health_check():
 
 if __name__ == '__main__':
     # Get port from environment variable, default to 7777 if local
-    port = int(os.environ.get("PORT", 7777)) 
+    port = int(os.environ.get("PORT", 7860)) 
     # Host must be 0.0.0.0 to be accessible externally
     app.run(host='0.0.0.0', port=port, debug=False)
+
