@@ -1,20 +1,27 @@
 # Use the official Playwright Python image
-# This includes Python and the Chromium browser pre-installed!
 FROM mcr.microsoft.com/playwright/python:v1.40.0-jammy
 
-# Set the working directory
-WORKDIR /app
+# Set up a new user named "user" with user ID 1000
+RUN useradd -m -u 1000 user
 
-# Copy requirements and install Python dependencies
-COPY requirements.txt .
+# Switch to the "user" user
+USER user
+
+# Set home to the user's home directory
+ENV HOME=/home/user \
+    PATH=/home/user/.local/bin:$PATH
+
+# Set the working directory to the user's home directory
+WORKDIR $HOME/app
+
+# Copy the current directory contents into the container at $HOME/app setting the owner to the user
+COPY --chown=user . $HOME/app
+
+# Install requirements
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application code
-COPY . .
+# Expose the port that Hugging Face expects
+EXPOSE 7860
 
-# Expose the port (Render typically uses 10000, but we'll use an env var)
-EXPOSE 10000
-
-# Run the application using Gunicorn for production stability
-# OR just run python app.py if you want to keep it simple for this project
+# Run the application
 CMD ["python", "app.py"]
