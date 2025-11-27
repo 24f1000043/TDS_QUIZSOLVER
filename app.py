@@ -53,4 +53,7 @@ def health_check():
     return jsonify({"status": "healthy"}), 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=7777, debug=False)
+    # Get port from environment variable, default to 7777 if local
+    port = int(os.environ.get("PORT", 7777)) 
+    # Host must be 0.0.0.0 to be accessible externally
+    app.run(host='0.0.0.0', port=port, debug=False)
